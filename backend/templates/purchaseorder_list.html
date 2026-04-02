@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Purchaseorders | NexusProcurement{% endblock %}
+{% block page_title %}Purchaseorders{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search purchaseorders...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+      <option value="submitted" {% if status_filter == 'submitted' %}selected{% endif %}>Submitted</option>
+      <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+      <option value="received" {% if status_filter == 'received' %}selected{% endif %}>Received</option>
+      <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/purchaseorders/create/" class="btn btn-primary">+ New PurchaseOrder</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Po Number</th><th>Vendor Name</th><th>Total</th><th>Status</th><th>Order Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/purchaseorders/{{ r.pk }}/edit/"><strong>{{ r.po_number }}</strong></a></td>
+        <td>{{ r.vendor_name|default:"-" }}</td>
+        <td>{{ r.total|floatformat:2 }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td style="color:var(--muted)">{{ r.order_date|date:"M d, Y"|default:"-" }}</td>
+        <td class="actions">
+          <a href="/purchaseorders/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/purchaseorders/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No purchaseorders found.</p>
+    <a href="/purchaseorders/create/" class="btn btn-primary" style="margin-top:1rem">Create PurchaseOrder</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
