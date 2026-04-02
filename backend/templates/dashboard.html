@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | NexusProcurement{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Vendors</div>
+    <div class="stat-value">{{ vendor_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Purchaseorders</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#10b981,#06b6d4);-webkit-background-clip:text;background-clip:text">{{ purchaseorder_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Requisitions</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;background-clip:text">{{ requisition_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Rating</div>
+    <div class="stat-value" style="background:linear-gradient(135deg,#ef4444,#ec4899);-webkit-background-clip:text;background-clip:text">{{ vendor_total_rating|floatformat:0 }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <h3>Recent Vendors</h3>
+    <a href="/vendors/create/" class="btn btn-primary btn-sm">+ New Vendor</a>
+  </div>
+  {% if recent %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Contact Person</th><th>Email</th><th>Phone</th><th>Category</th><th>Created</th></tr>
+    </thead>
+    <tbody>
+      {% for r in recent %}
+      <tr>
+        <td><a href="/vendors/{{ r.pk }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.contact_person|default:"-" }}</td><td>{{ r.email|default:"-" }}</td><td>{{ r.phone|default:"-" }}</td><td>{{ r.category|default:"-" }}</td><td style="color:var(--muted)">{{ r.created_at|date:"M d, Y" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No records yet.</p>
+    <a href="/vendors/create/" class="btn btn-primary" style="margin-top:1rem">Create First Vendor</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
