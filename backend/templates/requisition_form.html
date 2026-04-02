@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Requisition | NexusProcurement{% endblock %}
+{% block page_title %}{% if editing %}Edit Requisition{% else %}New Requisition{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" name="title" value="{{ record.title|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Requested By</label>
+        <input type="text" name="requested_by" value="{{ record.requested_by|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" name="department" value="{{ record.department|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Estimated Cost</label>
+        <input type="number" step="0.01" name="estimated_cost" value="{{ record.estimated_cost|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="draft" {% if record.status == 'draft' %}selected{% endif %}>Draft</option>
+          <option value="submitted" {% if record.status == 'submitted' %}selected{% endif %}>Submitted</option>
+          <option value="approved" {% if record.status == 'approved' %}selected{% endif %}>Approved</option>
+          <option value="rejected" {% if record.status == 'rejected' %}selected{% endif %}>Rejected</option>
+          <option value="ordered" {% if record.status == 'ordered' %}selected{% endif %}>Ordered</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select name="priority">
+          <option value="low" {% if record.priority == 'low' %}selected{% endif %}>Low</option>
+          <option value="medium" {% if record.priority == 'medium' %}selected{% endif %}>Medium</option>
+          <option value="high" {% if record.priority == 'high' %}selected{% endif %}>High</option>
+          <option value="urgent" {% if record.priority == 'urgent' %}selected{% endif %}>Urgent</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="date" value="{{ record.date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Requisition</button>
+      <a href="/requisitions/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
